@@ -55,4 +55,18 @@ public class DriveSubsystem {
 	public void togglePrecision() {
 		precisionMode = !precisionMode;
 	}
+	
+	public void arcadeMode(double xValue, double yValue) {
+		double rightPower = yValue - xValue;
+		double leftPower = yValue + xValue;
+		
+		if (rightPower > 1) {
+			rightPower/=2;
+		}
+		if (leftPower > 1) {
+			leftPower/=2;
+		}
+		
+		tankDrive(leftPower,rightPower); 
+	}
 }
