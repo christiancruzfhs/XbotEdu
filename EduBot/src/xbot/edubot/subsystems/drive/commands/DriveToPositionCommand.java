@@ -44,7 +44,7 @@ public class DriveToPositionCommand extends BaseCommand {
 		double changeErr = error;
 		error = setPosition - myPosition;
 		
-		power = .7895 * error - 4 * (changeErr - error);
+		power = 1.3 * error - 5 * (changeErr - error);
 	
 		drive.tankDrive(power, power);
 		
