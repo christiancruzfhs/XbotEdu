@@ -9,9 +9,11 @@ public class DriveToPositionCommand extends BaseCommand {
 
 	DriveSubsystem drive;
 	double setPosition;
-	double myInitial;
-	double midPoint = setPosition/2;
 	double myPosition;
+	double power;
+	double initialErr = 0;
+	double error;
+	boolean done = false;
 	
 	@Inject
 	public DriveToPositionCommand(DriveSubsystem driveSubsystem) {
@@ -27,7 +29,6 @@ public class DriveToPositionCommand extends BaseCommand {
 	@Override
 	public void initialize() {
 		// If you have some one-time setup, do it here.
-		myInitial = drive.distanceSensor.getDistance();
 	}
 
 	@Override
@@ -40,13 +41,17 @@ public class DriveToPositionCommand extends BaseCommand {
 		// How you do this is up to you. If you get stuck, ask a mentor or student for some hints!
 		
 		myPosition = drive.distanceSensor.getDistance();
+		double changeErr = error;
+		error = setPosition - myPosition;
 		
-		if (myPosition < setPosition) {
-			drive.tankDrive(1, 1);
-		} else if (myPosition > setPosition) {
-			drive.tankDrive(-1, -1);
-		} else {
-			drive.tankDrive(0, 0);
+		power = .7895 * error - 4 * (changeErr - error);
+	
+		drive.tankDrive(power, power);
+		
+		changeErr = error;
+		
+		if (error > -.01 && error < .01) {
+			done = true;
 		}
 	}
 	
@@ -54,7 +59,6 @@ public class DriveToPositionCommand extends BaseCommand {
 	public boolean isFinished() {
 		// Modify this to return true once you have met your goal, 
 		// and you're moving fairly slowly (ideally stopped)
-		return false;
+		return done;
 	}
-
 }
